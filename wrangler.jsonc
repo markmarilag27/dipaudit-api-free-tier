@@ -3,13 +3,26 @@
   "name": "dipaudit-api-free-tier",
   "main": "src/index.ts",
   "compatibility_date": "2025-05-19",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "kv_namespaces": [
     {
-      "binding": "SCRAPE_KV",
-      "id": "7f2d5a43bf9c41269d227ba46fd21d59"
-    }
+      "binding": "KV",
+      "id": "3f78f2d40e3f4377aa57853912b5744f",
+    },
   ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "QUEUE",
+        "queue": "my-queue",
+      },
+    ],
+    "consumers": [
+      {
+        "queue": "my-queue",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5
+      },
+    ],
+  },
 }

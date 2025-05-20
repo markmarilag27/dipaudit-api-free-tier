@@ -30,9 +30,9 @@ export const verifyRecaptcha: MiddlewareHandler = async (c, next) => {
 }
 
 export const protectAndLimit: MiddlewareHandler = async (c, next) => {
-  const { SCRAPE_KV } = env<{ SCRAPE_KV: KVNamespace; }>(c)
+  const { KV } = env<{ KV: KVNamespace; }>(c)
   const { email, url } = await c.req.json()
-  const kv = SCRAPE_KV
+  const kv = KV
 
   if (!email || !url) return c.json({ error: 'Missing email or URL' }, 400)
   if (DISALLOWED_DOMAINS.some((domain) => url.includes(domain))) {
