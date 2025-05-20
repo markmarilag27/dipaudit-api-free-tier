@@ -1,0 +1,22 @@
+{
+  "name": "dipaudit-api-free-tier",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "hono": "^4.7.10",
+    "openai": "^4.100.0",
+    "undici": "^7.10.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250520.0",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
