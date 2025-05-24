@@ -8,9 +8,11 @@
   "dependencies": {
     "cheerio": "^1.0.0",
     "hono": "^4.7.10",
+    "mjml": "^4.15.3",
     "openai": "^4.100.0",
     "resend": "^4.5.1",
-    "undici": "^7.10.0"
+    "undici": "^7.10.0",
+    "zod": "^3.25.28"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250520.0",

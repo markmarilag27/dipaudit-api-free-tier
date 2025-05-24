@@ -1,17 +1,34 @@
 import { Env, Hono } from 'hono'
 import { env } from 'hono/adapter'
+import { z } from 'zod'
 import { verifyRecaptcha, protectAndLimit } from '../middleware/security'
 import { getScrapedData, buildSEOPrompt, buildAnalysisData, calculateSEOScore } from '../utils'
 import { OpenAI } from 'openai'
 import { Resend } from 'resend'
+import { generateSeoReportEmail } from '../emails/seoReportEmail'
 
 const route = new Hono()
 
 route.use('/scrape', verifyRecaptcha, protectAndLimit)
 
+// Define Zod schema
+const ScrapeSchema = z.object({
+  url: z.string().url().refine((val) => val.startsWith('http'), {
+    message: 'Only http or https URLs are allowed',
+  }),
+  email: z.string().email(),
+})
+
 route.post('/scrape', async (c) => {
   const { QUEUE } = env<{ QUEUE: Queue }>(c)
   const body = await c.req.json()
+
+  // Validate inputs
+  const result = ScrapeSchema.safeParse(body)
+  if (!result.success) {
+    return c.json({ error: 'Invalid input', details: result.error.format() }, 400)
+  }
+
   await QUEUE.send(body)
   return c.json({ queued: true })
 })
@@ -68,8 +85,8 @@ export const handleQueue = async (batch: MessageBatch<any>, env: Env, ctx: Execu
     await resend.emails.send({
       from: env.NO_REPLY_EMAIL,
       to: email,
-      subject: 'Your SEO Report is Ready',
-      html: `<p>Your report for <strong>${url}</strong> is ready.</p><pre>${JSON.stringify(aiSummary, null, 2)}</pre>`
+      subject: '✅ Your SEO Report is Ready',
+      html: generateSeoReportEmail({ url, aiSummary })
     })
   }
 }
